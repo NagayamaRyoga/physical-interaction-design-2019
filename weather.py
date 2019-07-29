@@ -73,8 +73,8 @@ class Weather:
         self.cloudiness = float(weather["clouds"]["all"])
         self.wind_speed = float(weather["wind"]["speed"])
         self.wind_direction = float(weather["wind"]["deg"])
-        self.rain_3h = float(weather["rain"]["3h"]) if "rain" in weather else None
-        self.snow_3h = float(weather["snow"]["3h"]) if "snow" in weather else None
+        self.rain_3h = float(weather["rain"]["3h"]) if "rain" in weather and "3h" in weather["rain"] else None
+        self.snow_3h = float(weather["snow"]["3h"]) if "snow" in weather and "3h" in weather["snow"] else None
 
 class Forecast:
     """Result of OpenWeatherMap forecast API result
