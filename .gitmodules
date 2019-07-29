@@ -1,0 +1,3 @@
+[submodule "serial-led-pi"]
+	path = serial-led-pi
+	url = https://github.com/kut-tktlab/serial-led-pi
