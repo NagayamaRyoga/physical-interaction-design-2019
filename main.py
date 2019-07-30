@@ -4,9 +4,12 @@ import os
 import time
 import weather
 import serial_led
+from switch_controller import SwitchController 
 
+SWITCH_PINS = [4, 5, 6]
 LED_PIN = 18
 NUM_LED = 15
+
 API_KEY_NAME = "OPEN_WEATHER_MAP_API_KEY"
 
 COLOR_SUNNY = [0xff, 0x00, 0x00]
@@ -43,7 +46,6 @@ def buildLEDColor(forecasts, i):
 
     a = weatherColor(forecasts[i // 3].cloudiness, forecasts[i // 3].rain_3h)
     b = weatherColor(forecasts[i // 3 + 1].cloudiness, forecasts[i // 3 + 1].rain_3h)
-    print(i % 3 / 3)
     return lerpColor(a, b, (i % 3) / 3)
 
 def buildLEDColors(forecasts):
@@ -54,8 +56,6 @@ def buildLEDColors(forecasts):
     return [buildLEDColor(forecasts, i) for i in range(19)]
 
 def main():
-    print("main")
-
     # Check if the API key exists
     if API_KEY_NAME not in os.environ:
         raise ApiKeyNotExistException("OpenWeatherMap API Key '{}' is not set".format(API_KEY_NAME))
@@ -65,13 +65,23 @@ def main():
     owm.is_debug_log_enabled = True
     response = owm.fetch_forecast("Kyoto")
 
+    # Create the switch controller
+    switch_ctrl = SwitchController()
+    switches = [switch_ctrl.switch(pin) for pin in SWITCH_PINS]
+
     # Setup the serial LED
     led = serial_led.SerialLED("./serial-led-pi/serialled.so", LED_PIN, NUM_LED)
 
-    # Light the LED up
-    led.send(buildLEDColors(response.forecasts))
+    # Main loop
+    while True:
+        if False in [sw.is_on() for sw in switches]:
+            # Light the LED up
+            led.send(buildLEDColors(response.forecasts))
+        else:
+            # Turn the LED off
+            led.clear()
 
-    time.sleep(10)
+        time.sleep(0.1)
 
 if __name__ == "__main__":
     main()

@@ -30,5 +30,6 @@ if __name__== "__main__":
         print(sw1.is_on())
         print(sw2.is_on())
         print(sw3.is_on())
+
         time.sleep(0.1)
 
