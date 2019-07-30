@@ -6,7 +6,7 @@ import weather
 import serial_led
 
 LED_PIN = 18
-NUM_LED = 19
+NUM_LED = 15
 API_KEY_NAME = "OPEN_WEATHER_MAP_API_KEY"
 
 COLOR_SUNNY = [0xff, 0x00, 0x00]
