@@ -8,7 +8,7 @@ from switch_controller import SwitchController
 
 SWITCH_PINS = [4, 5, 6]
 LED_PIN = 18
-NUM_LED = 15
+NUM_LED = 14
 
 API_KEY_NAME = "OPEN_WEATHER_MAP_API_KEY"
 
@@ -16,6 +16,8 @@ COLOR_SUNNY = [218, 100, 80]
 COLOR_CLOUDY = [229, 228, 219]
 COLOR_RAINY_WEAK = [120, 172, 182]
 COLOR_RAINY_STRONG = [33, 40, 69]
+
+CITIES = ["Kyoto", "Otsu", "Tokyo"]
 
 # Exceptions
 class ApiKeyNotExistException(Exception):
@@ -64,7 +66,7 @@ def main():
     # fetch the weather forecast data
     owm = weather.OpenWeatherMap(os.environ[API_KEY_NAME])
     owm.is_debug_log_enabled = True
-    response = owm.fetch_forecast("Kyoto")
+    responses = [owm.fetch_forecast(city) for city in CITIES]
 
     # Create the switch controller
     switch_ctrl = SwitchController()
@@ -76,14 +78,17 @@ def main():
     # Main loop
     try:
         while True:
-            if False in [sw.is_on() for sw in switches]:
-                # Light the LED up
-                led.send(buildLEDColors(response.forecasts))
+            for i in range(len(switches)):
+                if not switches[i].is_on():
+                    # Light the LED up
+                    print(CITIES[i])
+                    led.send(buildLEDColors(responses[i].forecasts))
+                    break
             else:
                 # Turn the LED off
                 led.clear()
 
-            time.sleep(0.1)
+            time.sleep(0.5)
     except KeyboardInterrupt:
         print("exit")
         led.clear()
