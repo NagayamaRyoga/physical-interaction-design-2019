@@ -12,9 +12,10 @@ NUM_LED = 15
 
 API_KEY_NAME = "OPEN_WEATHER_MAP_API_KEY"
 
-COLOR_SUNNY = [0xff, 0x00, 0x00]
-COLOR_CLOUDY = [0xa0, 0xa0, 0xa0]
-COLOR_RAINY = [0x00, 0x00, 0xff]
+COLOR_SUNNY = [218, 100, 80]
+COLOR_CLOUDY = [229, 228, 219]
+COLOR_RAINY_WEAK = [120, 172, 182]
+COLOR_RAINY_STRONG = [33, 40, 69]
 
 # Exceptions
 class ApiKeyNotExistException(Exception):
@@ -37,7 +38,7 @@ def weatherColor(cloudiness, rain_3h):
     if rain_3h == None:
         return lerpColor(COLOR_SUNNY, COLOR_CLOUDY, cloudiness / 100)
     else:
-        return lerpColor(COLOR_CLOUDY, COLOR_RAINY, min(rain_3h * 0.3, 1))
+        return lerpColor(COLOR_RAINY_WEAK, COLOR_RAINY_STRONG, min(rain_3h * 0.3, 1))
 
 def buildLEDColor(forecasts, i):
     if i % 3 == 0:
