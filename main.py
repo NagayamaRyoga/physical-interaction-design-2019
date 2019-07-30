@@ -73,15 +73,19 @@ def main():
     led = serial_led.SerialLED("./serial-led-pi/serialled.so", LED_PIN, NUM_LED)
 
     # Main loop
-    while True:
-        if False in [sw.is_on() for sw in switches]:
-            # Light the LED up
-            led.send(buildLEDColors(response.forecasts))
-        else:
-            # Turn the LED off
-            led.clear()
+    try:
+        while True:
+            if False in [sw.is_on() for sw in switches]:
+                # Light the LED up
+                led.send(buildLEDColors(response.forecasts))
+            else:
+                # Turn the LED off
+                led.clear()
 
-        time.sleep(0.1)
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        print("exit")
+        led.clear()
 
 if __name__ == "__main__":
     main()
