@@ -123,3 +123,23 @@ class OpenWeatherMap:
 
         self.debug_log("OpenWeatherMap.fetch_weather({}) -- succeeded".format(city_name))
         return Forecast(forecast)
+
+def test():
+    import os
+
+    API_KEY_NAME = "OPEN_WEATHER_MAP_API_KEY"
+
+    # Check if the API key exists
+    if API_KEY_NAME not in os.environ:
+        raise Exception("OpenWeatherMap API Key '{}' is not set".format(API_KEY_NAME))
+
+    owm = OpenWeatherMap(os.environ[API_KEY_NAME])
+    owm.is_debug_log_enabled = True
+
+    response = owm.fetch_forecast("Kyoto")
+
+    for w in response.forecasts:
+        print(w.timestamp, w.conditions[0].description, w.cloudiness, w.rain_3h)
+
+if __name__ == "__main__":
+    test()
